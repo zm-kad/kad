@@ -1,14 +1,19 @@
 ﻿/**
-* Copyright 2014 MWC
+* Copyright 2014 MWC & ZENGMENG
 * https://github.com/zm-kad/kad
 *
 * kad.js v0.1 - 2014/6/1
 *
 * Released under the MIT license.
 */
-var kad;
-(function (kad) {
-    kad.mix = function () {
+(function (g, doc, undefined) {
+    if (g.kad && g.kad.mwc_zm)
+        return;
+
+    var kd = g.kad = { mwc_zm: 1 };
+
+    // 扩展指定对象
+    kd.mix = function (dest, src, deep) {
     };
-})(kad || (kad = {}));
+})(window, document);
 //# sourceMappingURL=kad.js.map
