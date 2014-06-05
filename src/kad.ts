@@ -7,17 +7,22 @@
  * Released under the MIT license.
  */
 
-( ( g, doc, undefined?) =>
+( ( g, doc: Document, undefined?) =>
 {
-    if ( g.kad && g.kad.mwc_zm )
+    if ( g.kad && g.kad.zmwc )
         return;
 
-    var kd: any = g.kad = { mwc_zm: 1 };
-
+    var kd: any = g.kad = { zmwc: 1 };
+    
     // 扩展指定对象
     kd.mix = ( dest: Object, src: Object, deep?: boolean ) =>
     {
+        for ( var item in src )
+        {
+            dest[item] = src[item];
+        }
 
+        return dest;
     };
 
 })( window, document );
