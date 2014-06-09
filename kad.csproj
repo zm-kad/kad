@@ -59,7 +59,11 @@
     <TypeScriptCompile Include="src\kad.ts" />
     <TypeScriptCompile Include="typing\jquery.d.ts" />
   </ItemGroup>
-  <ItemGroup />
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <ItemGroup>
+    <Content Include="demo\index.html" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptOutFile>kad.js</TypeScriptOutFile>
+  </PropertyGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
 </Project>

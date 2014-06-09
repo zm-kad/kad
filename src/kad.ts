@@ -14,6 +14,39 @@ module kad
     var g = window,
         doc = document;
 
+    // 类型字符串映射
+    var types = {
+        "[object Boolean]": "boolean",
+        "[object Number]": "number",
+        "[object String]": "string",
+        "[object Function]": "function",
+        "[object Array]": "array",
+        "[object Date]": "date",
+        "[object RegExp]": "regexp",
+        "[object Object]": "object",
+        "[object Error]": "error"
+    };
+
+    export var type =
+        /**
+         * 获得指定对象的类型
+         * 
+         * @param obj 指定获取类型的对象
+         */
+        ( obj: any ): string =>
+        {
+            if ( typeof obj === "undefined" )
+                return "undefined";
+
+            if ( typeof obj === null )
+                return "null";
+
+            if ( typeof obj === "object" || typeof obj === "function" )
+                return types[Object.prototype.toString.call( obj )] || "object";
+
+            return typeof obj;
+        }
+    
     export var merge =
         /**
          * 将 src 对象合并到 dest 中，合并后返回 dest 对象。
@@ -24,14 +57,19 @@ module kad
          */
         ( dest: Object, src: Object, deep?: boolean ) =>
         {
-            for ( var prop in src )
+            if ( type( dest ) === "object" && type( src ) === "object" )
             {
-                if ( deep )
+                for ( var prop in src )
                 {
-                    dest[prop] = merge( dest[prop], src[prop], deep );
+                    if ( deep && type( dest[prop] ) === "object" && type( src[prop] ) === "object" )
+                    {
+                        dest[prop] = merge( dest[prop], src[prop], deep );
+                    }
+                    else
+                    {
+                        dest[prop] = src[prop];
+                    }
                 }
-
-                dest[prop] = src[prop];
             }
 
             return dest;
@@ -54,9 +92,66 @@ module kad
         ( deep: boolean, ...args: Object[] ): Object;
     } = () =>
         {
-            if ( arguments.length === 1 )
+            var first = arguments[0],       // 获得首个参数
+                len = arguments.length,     // 参数总数
+                isFirstBoolean = ( type( first ) === "boolean" ),   // 首个参数是否为布尔值
+                deep = false,               // 是否进行深拷贝
+                start = 1,                  // 开始位置
+                dest = first || {};       // 合并目标
+
+            if ( isFirstBoolean )
             {
-                return merge( kad, arguments[0] );
+                deep = first;
+                start = 2;
+                dest = arguments[1] || {};
+            }
+
+            // 若仅有一个参数，则使该参数的对象扩展 kad 自身；
+            // 或有两个参数，第一个是布尔值 (判断是否深拷贝)，则使用第二个参数扩展 kad 自身。
+            if ( len === start )
+            {
+                dest = kad;
+                start--;
+            }
+
+            for ( ; start < len; start++ )
+            {
+                var src = arguments[start];
+
+                if ( src )
+                {
+                    merge( dest, src, deep );
+                }
+            }
+
+            return dest;
+        }
+
+    export var each =
+        /**
+         * 遍历指定对象，当回调返回 false 将停止遍历。
+         * 
+         * @param obj       遍历的指定对象的每个元素。若 obj 为对象，则遍历所有属性；若为数组，则遍历每个元素。
+         * @param callback  每次遍历的回调
+         */
+        ( obj: Object, callback: ( index: number, element: any ) => any ) =>
+        {
+            if ( type( obj ) === "object" )
+            {
+                for ( var i in obj )
+                {
+                    if ( callback.call( obj[i], i, obj[i] ) === false )
+                    {
+                        break;
+                    }
+                }
             }
         }
+
+    extend( {
+        version: 0.1,
+        prefix: "zm-",
+        noop: () => { }
+    });
+
 }
