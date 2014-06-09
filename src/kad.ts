@@ -12,7 +12,12 @@ module kad
     "use strict";
 
     var g = window,
-        doc = document;
+        doc = document,
+
+        _toString = Object.prototype.toString,
+
+        _trim = String.prototype.trim,      // IE9+
+        regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g;
 
     // 类型字符串映射
     var types = {
@@ -42,7 +47,7 @@ module kad
                 return "null";
 
             if ( typeof obj === "object" || typeof obj === "function" )
-                return types[Object.prototype.toString.call( obj )] || "object";
+                return types[_toString.call( obj )] || "object";
 
             return typeof obj;
         }
@@ -61,13 +66,16 @@ module kad
             {
                 for ( var prop in src )
                 {
-                    if ( deep && type( dest[prop] ) === "object" && type( src[prop] ) === "object" )
+                    if ( src.hasOwnProperty( prop ) )
                     {
-                        dest[prop] = merge( dest[prop], src[prop], deep );
-                    }
-                    else
-                    {
-                        dest[prop] = src[prop];
+                        if ( deep && type( dest[prop] ) === "object" && type( src[prop] ) === "object" )
+                        {
+                            dest[prop] = merge( dest[prop], src[prop], deep );
+                        }
+                        else
+                        {
+                            dest[prop] = src[prop];
+                        }
                     }
                 }
             }
@@ -132,7 +140,7 @@ module kad
          * 遍历指定对象，当回调返回 false 将停止遍历。
          * 
          * @param obj       遍历的指定对象的每个元素。若 obj 为对象，则遍历所有属性；若为数组，则遍历每个元素。
-         * @param callback  每次遍历的回调
+         * @param callback  每次遍历的回调函数，回调函数接受 index: number 及 element: any 两个参数，index 为当前迭代的索引，element 为当前迭代的元素。
          */
         ( obj: Object, callback: ( index: number, element: any ) => any ) =>
         {
@@ -140,12 +148,26 @@ module kad
             {
                 for ( var i in obj )
                 {
-                    if ( callback.call( obj[i], i, obj[i] ) === false )
+                    if ( obj.hasOwnProperty( i ) && callback.call( obj[i], i, obj[i] ) === false )
                     {
                         break;
                     }
                 }
             }
+        }
+
+    export var trim =
+        /**
+         * 去除字符串两端的空格
+         * 
+         * @param text 指定字符串
+         */
+        ( text: string ): string =>
+        {
+            if ( text == null )
+                return "";
+
+            return _trim ? _trim.call( text ) : text.replace( regexp_trim, "" );
         }
 
     extend( {

@@ -2,7 +2,7 @@
 (function (kad) {
     "use strict";
 
-    var g = window, doc = document;
+    var g = window, doc = document, _toString = Object.prototype.toString, _trim = String.prototype.trim, regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g;
 
     var types = {
         "[object Boolean]": "boolean",
@@ -24,7 +24,7 @@
             return "null";
 
         if (typeof obj === "object" || typeof obj === "function")
-            return types[Object.prototype.toString.call(obj)] || "object";
+            return types[_toString.call(obj)] || "object";
 
         return typeof obj;
     };
@@ -32,10 +32,12 @@
     kad.merge = function (dest, src, deep) {
         if (kad.type(dest) === "object" && kad.type(src) === "object") {
             for (var prop in src) {
-                if (deep && kad.type(dest[prop]) === "object" && kad.type(src[prop]) === "object") {
-                    dest[prop] = kad.merge(dest[prop], src[prop], deep);
-                } else {
-                    dest[prop] = src[prop];
+                if (src.hasOwnProperty(prop)) {
+                    if (deep && kad.type(dest[prop]) === "object" && kad.type(src[prop]) === "object") {
+                        dest[prop] = kad.merge(dest[prop], src[prop], deep);
+                    } else {
+                        dest[prop] = src[prop];
+                    }
                 }
             }
         }
@@ -71,11 +73,18 @@
     kad.each = function (obj, callback) {
         if (kad.type(obj) === "object") {
             for (var i in obj) {
-                if (callback.call(obj[i], i, obj[i]) === false) {
+                if (obj.hasOwnProperty(i) && callback.call(obj[i], i, obj[i]) === false) {
                     break;
                 }
             }
         }
+    };
+
+    kad.trim = function (text) {
+        if (text == null)
+            return "";
+
+        return _trim ? _trim.call(text) : text.replace(regexp_trim, "");
     };
 
     kad.extend({
