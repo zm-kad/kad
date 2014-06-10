@@ -56,12 +56,15 @@
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
   </PropertyGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\kad.hack.ts" />
     <TypeScriptCompile Include="src\kad.ts" />
     <TypeScriptCompile Include="typing\jquery.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="demo\index.html" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptOutFile>kad.js</TypeScriptOutFile>
+  </PropertyGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
 </Project>

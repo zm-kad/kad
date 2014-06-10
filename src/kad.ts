@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright 2014 MWC & ZENGMENG
+ * Copyright 2014 MWC
  * https://github.com/zm-kad/kad
  * 
  * kad.js v0.1 - 2014/6/1

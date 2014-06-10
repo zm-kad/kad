@@ -1,6 +1,10 @@
 ﻿var kad;
 (function (kad) {
     "use strict";
+})(kad || (kad = {}));
+var kad;
+(function (kad) {
+    "use strict";
 
     var g = window, doc = document, _toString = Object.prototype.toString, _trim = String.prototype.trim, _regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g, _regexp_trim_start = /^[\s\u3000\uFEFF\xA0]+/, _regexp_trim_end = /[\s\u3000\uFEFF\xA0]+$/;
 
