@@ -2,7 +2,7 @@
 (function (kad) {
     "use strict";
 
-    var g = window, doc = document, _toString = Object.prototype.toString, _trim = String.prototype.trim, regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g;
+    var g = window, doc = document, _toString = Object.prototype.toString, _trim = String.prototype.trim, _regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g, _regexp_trim_start = /^[\s\u3000\uFEFF\xA0]+/, _regexp_trim_end = /[\s\u3000\uFEFF\xA0]+$/;
 
     var types = {
         "[object Boolean]": "boolean",
@@ -84,7 +84,21 @@
         if (text == null)
             return "";
 
-        return _trim ? _trim.call(text) : text.replace(regexp_trim, "");
+        return _trim ? _trim.call(text) : text.replace(_regexp_trim, "");
+    };
+
+    kad.trimStart = function (text) {
+        if (text == null)
+            return "";
+
+        return text.replace(_regexp_trim_start, "");
+    };
+
+    kad.trimEnd = function (text) {
+        if (text == null)
+            return "";
+
+        return text.replace(_regexp_trim_end, "");
     };
 
     kad.extend({

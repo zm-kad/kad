@@ -17,7 +17,9 @@ module kad
         _toString = Object.prototype.toString,
 
         _trim = String.prototype.trim,      // IE9+
-        regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g;
+        _regexp_trim = /^[\s\u3000\uFEFF\xA0]+|[\s\u3000\uFEFF\xA0]+$/g,
+        _regexp_trim_start = /^[\s\u3000\uFEFF\xA0]+/,
+        _regexp_trim_end = /[\s\u3000\uFEFF\xA0]+$/;
 
     // 类型字符串映射
     var types = {
@@ -32,6 +34,9 @@ module kad
         "[object Error]": "error"
     };
 
+    /**
+     * 获得指定对象的类型
+     */
     export var type =
         /**
          * 获得指定对象的类型
@@ -51,7 +56,10 @@ module kad
 
             return typeof obj;
         }
-    
+
+    /**
+     * 将 src 对象合并到 dest 中，合并后返回 dest 对象。
+     */
     export var merge =
         /**
          * 将 src 对象合并到 dest 中，合并后返回 dest 对象。
@@ -135,6 +143,9 @@ module kad
             return dest;
         }
 
+    /**
+     * 遍历指定对象，当回调返回 false 将停止遍历。
+     */
     export var each =
         /**
          * 遍历指定对象，当回调返回 false 将停止遍历。
@@ -156,6 +167,9 @@ module kad
             }
         }
 
+    /**
+     * 去除字符串两端的空格
+     */
     export var trim =
         /**
          * 去除字符串两端的空格
@@ -167,7 +181,41 @@ module kad
             if ( text == null )
                 return "";
 
-            return _trim ? _trim.call( text ) : text.replace( regexp_trim, "" );
+            return _trim ? _trim.call( text ) : text.replace( _regexp_trim, "" );
+        }
+
+    /**
+     * 去除字符串开始位置的空格
+     */
+    export var trimStart =
+        /**
+         * 去除字符串开始位置的空格
+         * 
+         * @param text 指定字符串
+         */
+        ( text: string ): string =>
+        {
+            if ( text == null )
+                return "";
+
+            return text.replace( _regexp_trim_start, "" );
+        }
+    
+    /**
+     * 去除字符串结尾位置的空格
+     */
+    export var trimEnd =
+        /**
+         * 去除字符串结尾位置的空格
+         * 
+         * @param text 指定字符串
+         */
+        ( text: string ): string =>
+        {
+            if ( text == null )
+                return "";
+
+            return text.replace( _regexp_trim_end, "" );
         }
 
     extend( {
